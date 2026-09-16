@@ -1,0 +1,714 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Trang chủ";
+    var colorMap = new Dictionary<string, string> {
+        { "blue",   "bg-blue-100 text-blue-700" },
+        { "green",  "bg-green-100 text-green-700" },
+        { "red",    "bg-red-100 text-red-700" },
+        { "purple", "bg-purple-100 text-purple-700" },
+        { "orange", "bg-orange-100 text-orange-700" },
+    };
+    var iconBgMap = new Dictionary<string, string> {
+        { "blue",   "bg-blue-100 text-blue-600" },
+        { "green",  "bg-green-100 text-green-600" },
+        { "red",    "bg-red-100 text-red-600" },
+        { "orange", "bg-orange-100 text-orange-600" },
+    };
+}
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 1 — HEADER / NAVIGATION
+     ═══════════════════════════════════════════════════════════ -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow">
+                    <i class="fa-solid fa-stethoscope text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold">
+                    <span class="text-sky-500">Hello</span><span class="text-gray-800"> Bác Sĩ</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-1">
+                @foreach (var item in new[] {
+                    ("Trang chủ", "/", true),
+                    ("Tìm bác sĩ", "/doctors", false),
+                    ("Bài viết sức khỏe", "/articles", false),
+                    ("Cộng đồng", "/community", false),
+                    ("Công cụ sức khỏe", "/tools", false)
+                })
+                {
+                    <a href="@item.Item2"
+                       class="px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                              @(item.Item3 ? "text-sky-600 bg-sky-50" : "text-gray-600 hover:text-sky-600 hover:bg-gray-50")">
+                        @item.Item1
+                    </a>
+                }
+            </nav>
+
+            <!-- Auth Buttons -->
+            <div class="flex items-center gap-2">
+                <a asp-controller="Account" asp-action="Login"
+                   class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-sky-600 border border-sky-200 rounded-lg hover:bg-sky-50 transition-colors">
+                    <i class="fa-regular fa-user text-xs"></i> Đăng nhập
+                </a>
+                <a asp-controller="Account" asp-action="Register"
+                   class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-sky-500 rounded-lg hover:bg-sky-600 transition-colors shadow-sm">
+                    <i class="fa-solid fa-user-plus text-xs"></i> Đăng ký
+                </a>
+                <!-- Mobile menu toggle -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 pb-4">
+        @foreach (var item in new[] {
+            ("Trang chủ", "/"),
+            ("Tìm bác sĩ", "/doctors"),
+            ("Bài viết sức khỏe", "/articles"),
+            ("Cộng đồng", "/community"),
+            ("Công cụ sức khỏe", "/tools")
+        })
+        {
+            <a href="@item.Item2" class="block py-2.5 text-sm font-medium text-gray-700 hover:text-sky-600 border-b border-gray-50">
+                @item.Item1
+            </a>
+        }
+        <a asp-controller="Account" asp-action="Login" class="block mt-3 py-2 text-center text-sm font-medium text-sky-600 border border-sky-200 rounded-lg">Đăng nhập</a>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 2 — HERO
+     ═══════════════════════════════════════════════════════════ -->
+<section class="relative bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 overflow-hidden">
+    <!-- Decorative blobs -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-sky-200 rounded-full opacity-20 translate-x-1/2 -translate-y-1/4 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-72 h-72 bg-blue-300 rounded-full opacity-10 -translate-x-1/3 translate-y-1/4 blur-3xl"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+            <!-- Left content -->
+            <div class="space-y-6">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm border border-sky-100">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-xs font-semibold text-sky-700 tracking-wide uppercase">Tư vấn trực tuyến 24/7</span>
+                </div>
+
+                <!-- Heading -->
+                <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight">
+                    Chăm sóc sức khỏe
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">thông minh</span>,<br />
+                    mọi lúc mọi nơi
+                </h1>
+                <p class="text-lg text-gray-600 max-w-md">
+                    Kết nối với hơn <strong>500+ bác sĩ chuyên khoa</strong> uy tín. Đặt lịch khám, tư vấn trực tuyến và theo dõi sức khỏe ngay trên nền tảng số.
+                </p>
+
+                <!-- Search Box -->
+                <div class="bg-white rounded-2xl shadow-lg p-3 border border-gray-100 max-w-xl">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="flex-1 flex items-center gap-2 px-3 py-2.5 bg-gray-50 rounded-xl">
+                            <i class="fa-solid fa-user-doctor text-sky-500 text-sm shrink-0"></i>
+                            <input type="text" placeholder="Bác sĩ hoặc chuyên khoa..."
+                                   class="bg-transparent flex-1 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0" />
+                        </div>
+                        <div class="flex-1 flex items-center gap-2 px-3 py-2.5 bg-gray-50 rounded-xl">
+                            <i class="fa-solid fa-location-dot text-red-400 text-sm shrink-0"></i>
+                            <input type="text" placeholder="Địa điểm hoặc triệu chứng..."
+                                   class="bg-transparent flex-1 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0" />
+                        </div>
+                        <button class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm shrink-0">
+                            <i class="fa-solid fa-magnifying-glass mr-1"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <a href="/booking"
+                       class="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-xl transition-colors shadow-md">
+                        <i class="fa-solid fa-calendar-plus"></i> Đặt lịch khám ngay
+                    </a>
+                    <a href="/consultation"
+                       class="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-sky-600 font-semibold rounded-xl border border-sky-200 transition-colors">
+                        <i class="fa-solid fa-video"></i> Tư vấn trực tuyến
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="flex gap-6 pt-2">
+                    @foreach (var stat in new[] { ("500+", "Bác sĩ"), ("50K+", "Bệnh nhân"), ("4.9★", "Đánh giá") })
+                    {
+                        <div>
+                            <div class="text-2xl font-bold text-sky-600">@stat.Item1</div>
+                            <div class="text-xs text-gray-500">@stat.Item2</div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right: Doctor illustration -->
+            <div class="hidden lg:flex justify-center relative">
+                <div class="relative w-80 h-80">
+                    <!-- Main circle -->
+                    <div class="w-80 h-80 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 opacity-10"></div>
+                    <div class="absolute inset-4 rounded-full bg-gradient-to-br from-sky-300 to-blue-500 opacity-15"></div>
+                    <!-- Doctor avatar -->
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face"
+                         alt="Bác sĩ"
+                         class="absolute inset-0 w-full h-full object-cover rounded-full border-4 border-white shadow-2xl" />
+                    <!-- Floating cards -->
+                    <div class="absolute -top-4 -right-6 bg-white rounded-2xl shadow-lg px-4 py-2.5 border border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-gray-800">Bác sĩ trực tuyến</div>
+                                <div class="text-xs text-green-500">● 128 đang hoạt động</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-4 -left-6 bg-white rounded-2xl shadow-lg px-4 py-2.5 border border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-sky-100 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-star text-yellow-500 text-xs"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-gray-800">Đánh giá trung bình</div>
+                                <div class="text-xs text-gray-500">4.9 / 5 ★</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 3 — GRID DỊCH VỤ CHÍNH
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <span class="text-xs font-bold uppercase tracking-widest text-sky-500">Dịch vụ của chúng tôi</span>
+            <h2 class="mt-2 text-3xl font-extrabold text-gray-900">Chăm sóc sức khỏe toàn diện</h2>
+            <p class="mt-2 text-gray-500 max-w-xl mx-auto">Từ đặt lịch khám, tư vấn đến theo dõi sức khỏe — tất cả trong một nền tảng duy nhất.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            @{
+                var displayServices = Model.Services.Any() ? Model.Services : new List<ServiceDto>
+                {
+                    new() { Name = "Đặt lịch khám", Description = "Hơn 500+ bác sĩ chuyên khoa uy tín", IconClass = "fa-calendar-check", Color = "blue", Url = "/booking" },
+                    new() { Name = "Tư vấn trực tuyến", Description = "Chat/Video call mọi lúc, mọi nơi", IconClass = "fa-video", Color = "green", Url = "/consultation" },
+                    new() { Name = "Sức khỏe của tôi", Description = "Theo dõi hồ sơ và chỉ số cá nhân", IconClass = "fa-heartbeat", Color = "red", Url = "/health-records" },
+                    new() { Name = "Nhà thuốc trực tuyến", Description = "Mua thuốc theo đơn, giao tận nơi", IconClass = "fa-pills", Color = "orange", Url = "/pharmacy" },
+                };
+            }
+            @foreach (var svc in displayServices)
+            {
+                var bg = iconBgMap.GetValueOrDefault(svc.Color, "bg-sky-100 text-sky-600");
+                <a href="@svc.Url"
+                   class="group bg-white border border-gray-100 rounded-2xl p-6 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+                    <div class="w-14 h-14 rounded-2xl @bg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid @svc.IconClass"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base">@svc.Name</h3>
+                        <p class="text-sm text-gray-500 mt-1">@svc.Description</p>
+                    </div>
+                    <span class="text-xs font-semibold text-sky-500 group-hover:underline">Khám phá →</span>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 4 — BÁC SĨ NỔI BẬT
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-end justify-between mb-10">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-sky-500">Đội ngũ y tế</span>
+                <h2 class="mt-2 text-3xl font-extrabold text-gray-900">Bác sĩ nổi bật</h2>
+            </div>
+            <a href="/doctors" class="text-sm font-semibold text-sky-500 hover:text-sky-600 flex items-center gap-1">
+                Xem tất cả <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @foreach (var doctor in Model.FeaturedDoctors)
+            {
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col">
+                    <!-- Avatar -->
+                    <div class="relative pt-6 px-6 flex justify-center">
+                        <div class="relative">
+                            <img src="@doctor.AvatarUrl" alt="@doctor.FullName"
+                                 class="w-20 h-20 rounded-full object-cover ring-4 ring-sky-100" />
+                            @if (doctor.IsOnline)
+                            {
+                                <span class="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="p-5 flex flex-col flex-1">
+                        <h3 class="font-bold text-gray-900 text-center text-sm leading-snug">@doctor.FullName</h3>
+                        <p class="text-sky-500 text-xs text-center font-semibold mt-1">@doctor.Specialty</p>
+                        <p class="text-gray-400 text-xs text-center mt-0.5 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-hospital text-xs"></i> @doctor.Hospital
+                        </p>
+
+                        <!-- Rating -->
+                        <div class="flex items-center justify-center gap-1.5 mt-3">
+                            <div class="flex">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="fa-solid fa-star text-xs @(i <= Math.Round(doctor.Rating) ? "text-yellow-400" : "text-gray-200")"></i>
+                                }
+                            </div>
+                            <span class="text-xs font-semibold text-gray-700">@doctor.Rating.ToString("F1")</span>
+                            <span class="text-xs text-gray-400">(@doctor.ReviewCount)</span>
+                        </div>
+
+                        <!-- Experience + Fee -->
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
+                            <span class="text-xs text-gray-500 flex items-center gap-1">
+                                <i class="fa-regular fa-clock text-sky-400"></i> @doctor.ExperienceYears
+                            </span>
+                            <span class="text-sm font-bold text-sky-600">
+                                @doctor.ConsultationFee.ToString("N0")₫
+                            </span>
+                        </div>
+
+                        <!-- CTA -->
+                        <a href="/booking/@doctor.Id"
+                           class="mt-4 w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold rounded-xl text-center transition-colors">
+                            Đặt lịch ngay
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 5 — QUY TRÌNH 3 BƯỚC
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-gradient-to-br from-sky-500 to-blue-700 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <span class="text-xs font-bold uppercase tracking-widest text-sky-200">Đơn giản & nhanh chóng</span>
+            <h2 class="mt-2 text-3xl font-extrabold text-white">Chỉ 3 bước để được khám chữa bệnh</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            <!-- Connector line (desktop) -->
+            <div class="hidden md:block absolute top-12 left-1/3 right-1/3 h-0.5 bg-white opacity-20"></div>
+
+            @foreach (var step in new[] {
+                ("01", "Chọn bác sĩ", "Tìm kiếm và chọn bác sĩ phù hợp theo chuyên khoa, bệnh viện hoặc đánh giá.", "fa-user-doctor"),
+                ("02", "Đặt lịch trực tuyến", "Chọn khung giờ phù hợp và xác nhận lịch hẹn chỉ trong vài giây.", "fa-calendar-check"),
+                ("03", "Khám & nhận chẩn đoán", "Gặp bác sĩ trực tiếp hoặc qua video call và nhận kết quả ngay.", "fa-file-medical"),
+            })
+            {
+                <div class="relative bg-white bg-opacity-10 backdrop-blur rounded-2xl p-8 text-center border border-white border-opacity-20 hover:bg-opacity-20 transition-all">
+                    <div class="inline-flex w-16 h-16 rounded-full bg-white bg-opacity-20 items-center justify-center mb-4">
+                        <i class="fa-solid @step.Item4 text-white text-2xl"></i>
+                    </div>
+                    <div class="text-5xl font-black text-white opacity-10 absolute top-4 right-6 leading-none select-none">@step.Item1</div>
+                    <h3 class="text-lg font-bold text-white mb-2">@step.Item2</h3>
+                    <p class="text-sky-100 text-sm leading-relaxed">@step.Item3</p>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-10">
+            <a href="/booking"
+               class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-sky-600 font-bold rounded-xl hover:bg-sky-50 transition-colors shadow-lg">
+                <i class="fa-solid fa-rocket"></i> Bắt đầu ngay hôm nay
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 6 — TIN TỨC SỨC KHỎE
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-end justify-between mb-10">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-sky-500">Kiến thức y tế</span>
+                <h2 class="mt-2 text-3xl font-extrabold text-gray-900">Tin tức sức khỏe</h2>
+            </div>
+            <a href="/articles" class="text-sm font-semibold text-sky-500 hover:text-sky-600 flex items-center gap-1">
+                Xem tất cả <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach (var article in Model.LatestArticles)
+            {
+                var badgeClass = colorMap.GetValueOrDefault(article.CategoryColor, "bg-blue-100 text-blue-700");
+                <a href="/articles/@article.Slug"
+                   class="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+                    <!-- Thumbnail -->
+                    <div class="relative overflow-hidden h-48">
+                        <img src="@article.ThumbnailUrl" alt="@article.Title"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-bold rounded-lg @badgeClass">
+                            @article.Category
+                        </span>
+                    </div>
+                    <!-- Content -->
+                    <div class="p-5">
+                        <h3 class="font-bold text-gray-900 text-base leading-snug line-clamp-2 group-hover:text-sky-600 transition-colors">
+                            @article.Title
+                        </h3>
+                        <p class="text-sm text-gray-500 mt-2 line-clamp-2">@article.Excerpt</p>
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-50">
+                            <span class="text-xs text-gray-400 flex items-center gap-1">
+                                <i class="fa-regular fa-user text-sky-400"></i> @article.Author
+                            </span>
+                            <span class="text-xs text-gray-400 flex items-center gap-1">
+                                <i class="fa-regular fa-clock text-sky-400"></i> @article.ReadingTimeMinutes phút đọc
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 7 — CÔNG CỤ SỨC KHỎE
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <span class="text-xs font-bold uppercase tracking-widest text-sky-500">Tiện ích</span>
+            <h2 class="mt-2 text-3xl font-extrabold text-gray-900">Công cụ sức khỏe miễn phí</h2>
+            <p class="mt-2 text-gray-500 max-w-md mx-auto">Theo dõi và quản lý sức khỏe của bạn với các công cụ thông minh.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            @foreach (var tool in new[] {
+                ("Chỉ số BMI", "Tính chỉ số khối cơ thể và nhận tư vấn cân nặng lý tưởng.", "fa-weight-scale", "bg-blue-500", "/tools/bmi"),
+                ("Nhắc uống thuốc", "Thiết lập nhắc nhở uống thuốc đúng giờ mỗi ngày.", "fa-bell", "bg-green-500", "/tools/medicine-reminder"),
+                ("Theo dõi huyết áp", "Ghi lại và theo dõi chỉ số huyết áp theo thời gian.", "fa-heart-pulse", "bg-red-500", "/tools/blood-pressure"),
+                ("Tính calo", "Tính lượng calo cần thiết dựa trên mục tiêu của bạn.", "fa-fire-flame-curved", "bg-orange-500", "/tools/calorie"),
+            })
+            {
+                <a href="@tool.Item5"
+                   class="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col items-center text-center gap-4">
+                    <div class="w-14 h-14 @tool.Item4 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <i class="fa-solid @tool.Item3 text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900">@tool.Item1</h3>
+                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">@tool.Item2</p>
+                    </div>
+                    <span class="text-xs font-semibold text-sky-500 group-hover:underline">Dùng ngay →</span>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 8 — CỘNG ĐỒNG SỨC KHỎE
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-end justify-between mb-10">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-sky-500">Hỏi đáp</span>
+                <h2 class="mt-2 text-3xl font-extrabold text-gray-900">Cộng đồng sức khỏe</h2>
+            </div>
+            <a href="/community" class="text-sm font-semibold text-sky-500 hover:text-sky-600 flex items-center gap-1">
+                Tham gia ngay <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            @foreach (var qa in new[] {
+                ("Uống thuốc huyết áp có cần nhịn ăn sáng không?", "Tim mạch", "Nguyễn Văn B.", 24, 3, "fa-heart"),
+                ("Trẻ 3 tuổi bị sốt 38.5°C, có nên dùng hạ sốt ngay?", "Nhi khoa", "Trần Thị C.", 18, 7, "fa-baby"),
+                ("Đau lưng dưới khi ngồi lâu có phải thoát vị đĩa đệm?", "Cơ xương khớp", "Lê Minh D.", 31, 5, "fa-bone"),
+                ("Bệnh tiểu đường type 2 có ăn được hoa quả ngọt không?", "Nội tiết", "Phạm Thu E.", 45, 8, "fa-apple-whole"),
+                ("Mất ngủ kéo dài có ảnh hưởng đến tim mạch không?", "Thần kinh", "Hoàng Văn F.", 22, 4, "fa-moon"),
+                ("Viêm họng mạn tính có cần phẫu thuật cắt amidan?", "Tai Mũi Họng", "Vũ Thị G.", 17, 6, "fa-head-side-cough"),
+            })
+            {
+                <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 bg-sky-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                            <i class="fa-solid @qa.Item6 text-sky-500 text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="inline-block text-xs font-semibold bg-sky-50 text-sky-600 px-2 py-0.5 rounded-md mb-1.5">@qa.Item2</span>
+                            <h4 class="text-sm font-semibold text-gray-800 leading-snug hover:text-sky-600 cursor-pointer">@qa.Item1</h4>
+                            <div class="flex items-center gap-3 mt-2.5">
+                                <span class="text-xs text-gray-400 flex items-center gap-1">
+                                    <i class="fa-regular fa-user text-gray-300"></i> @qa.Item3
+                                </span>
+                                <span class="text-xs text-gray-400 flex items-center gap-1">
+                                    <i class="fa-regular fa-eye text-gray-300"></i> @qa.Item4
+                                </span>
+                                <span class="text-xs text-green-500 flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i> @qa.Item5 trả lời
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 9 — BANNER TẢI APP MOBILE
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-gradient-to-r from-blue-900 via-blue-800 to-sky-700 relative overflow-hidden">
+    <!-- Decorative circles -->
+    <div class="absolute top-0 right-0 w-80 h-80 bg-sky-500 rounded-full opacity-10 translate-x-1/3 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-400 rounded-full opacity-10 -translate-x-1/3 translate-y-1/2"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+            <!-- Left -->
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white bg-opacity-10 rounded-full border border-white border-opacity-20">
+                    <i class="fa-solid fa-mobile-screen-button text-sky-300 text-sm"></i>
+                    <span class="text-xs font-semibold text-sky-200 uppercase tracking-wide">Ứng dụng di động</span>
+                </div>
+                <h2 class="text-4xl font-extrabold text-white leading-tight">
+                    Tải app Hello Bác Sĩ<br />
+                    <span class="text-sky-300">Miễn phí hoàn toàn</span>
+                </h2>
+                <p class="text-blue-200 text-base max-w-md">
+                    Quản lý lịch khám, nhận kết quả xét nghiệm và tư vấn với bác sĩ ngay trên điện thoại của bạn — mọi lúc, mọi nơi.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <!-- App Store -->
+                    <a href="#" class="flex items-center gap-3 bg-white text-gray-900 px-5 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-md group">
+                        <i class="fa-brands fa-apple text-2xl"></i>
+                        <div class="text-left">
+                            <div class="text-xs text-gray-500 leading-none">Tải về trên</div>
+                            <div class="text-sm font-bold leading-snug">App Store</div>
+                        </div>
+                    </a>
+                    <!-- Google Play -->
+                    <a href="#" class="flex items-center gap-3 bg-white text-gray-900 px-5 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-md group">
+                        <i class="fa-brands fa-google-play text-2xl text-green-600"></i>
+                        <div class="text-left">
+                            <div class="text-xs text-gray-500 leading-none">Tải về trên</div>
+                            <div class="text-sm font-bold leading-snug">Google Play</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- App stats -->
+                <div class="flex gap-8 pt-2">
+                    @foreach (var stat in new[] { ("4.9★", "App Store"), ("4.8★", "Google Play"), ("200K+", "Lượt tải") })
+                    {
+                        <div>
+                            <div class="text-xl font-bold text-white">@stat.Item1</div>
+                            <div class="text-xs text-blue-300">@stat.Item2</div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right: Phone mockup -->
+            <div class="hidden lg:flex justify-center">
+                <div class="relative">
+                    <!-- Phone frame -->
+                    <div class="w-56 h-[460px] bg-gray-900 rounded-[3rem] p-2 shadow-2xl ring-1 ring-white ring-opacity-10">
+                        <div class="w-full h-full bg-gradient-to-b from-sky-500 to-blue-700 rounded-[2.5rem] overflow-hidden relative">
+                            <!-- Notch -->
+                            <div class="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-5 bg-gray-900 rounded-full z-10"></div>
+                            <!-- Screen content mockup -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 pt-12">
+                                <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                                    <i class="fa-solid fa-stethoscope text-sky-500 text-2xl"></i>
+                                </div>
+                                <div class="text-white font-bold text-lg text-center leading-tight">Hello Bác Sĩ</div>
+                                <div class="w-full space-y-2 mt-2">
+                                    @for (int i = 0; i < 4; i++)
+                                    {
+                                        <div class="bg-white bg-opacity-20 rounded-xl h-12 flex items-center px-3 gap-2">
+                                            <div class="w-8 h-8 bg-white bg-opacity-30 rounded-lg"></div>
+                                            <div class="flex-1 space-y-1">
+                                                <div class="bg-white bg-opacity-40 rounded h-2 w-3/4"></div>
+                                                <div class="bg-white bg-opacity-20 rounded h-1.5 w-1/2"></div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Glow effect -->
+                    <div class="absolute inset-0 bg-sky-400 opacity-20 rounded-[3rem] blur-xl scale-95 -z-10"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 10 — FOOTER
+     ═══════════════════════════════════════════════════════════ -->
+<footer class="bg-gray-900 text-gray-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+            <!-- Col 1: Brand -->
+            <div class="col-span-2 lg:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center">
+                        <i class="fa-solid fa-stethoscope text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold text-white">Hello Bác Sĩ</span>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                    Nền tảng y tế số kết nối bệnh nhân với bác sĩ chuyên khoa uy tín trên toàn quốc.
+                </p>
+                <div class="flex gap-3">
+                    @foreach (var social in new[] {
+                        ("fa-facebook-f", "https://facebook.com"),
+                        ("fa-youtube", "https://youtube.com"),
+                        ("fa-tiktok", "https://tiktok.com"),
+                        ("fa-instagram", "https://instagram.com"),
+                    })
+                    {
+                        <a href="@social.Item2" target="_blank"
+                           class="w-9 h-9 rounded-lg bg-gray-800 hover:bg-sky-600 flex items-center justify-center transition-colors">
+                            <i class="fa-brands @social.Item1 text-sm"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Col 2: Dịch vụ -->
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Dịch vụ</h4>
+                <ul class="space-y-2.5">
+                    @foreach (var link in new[] {
+                        ("Đặt lịch khám", "/booking"),
+                        ("Tư vấn trực tuyến", "/consultation"),
+                        ("Hồ sơ sức khỏe", "/health-records"),
+                        ("Nhà thuốc trực tuyến", "/pharmacy"),
+                        ("Xét nghiệm tại nhà", "/home-testing"),
+                    })
+                    {
+                        <li><a href="@link.Item2" class="text-sm text-gray-400 hover:text-sky-400 transition-colors">@link.Item1</a></li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Col 3: Về chúng tôi -->
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Về chúng tôi</h4>
+                <ul class="space-y-2.5">
+                    @foreach (var link in new[] {
+                        ("Giới thiệu", "/about"),
+                        ("Đội ngũ bác sĩ", "/doctors"),
+                        ("Tuyển dụng", "/careers"),
+                        ("Điều khoản sử dụng", "/terms"),
+                        ("Chính sách bảo mật", "/privacy"),
+                    })
+                    {
+                        <li><a href="@link.Item2" class="text-sm text-gray-400 hover:text-sky-400 transition-colors">@link.Item1</a></li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Col 4: Liên hệ -->
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Liên hệ</h4>
+                <ul class="space-y-3">
+                    @foreach (var contact in new[] {
+                        ("fa-map-location-dot", "123 Đường Y Tế, Q.1, TP.HCM"),
+                        ("fa-phone", "1800 1234 (miễn phí)"),
+                        ("fa-envelope", "support@hellobacsi.vn"),
+                        ("fa-clock", "Hỗ trợ 24/7, kể cả ngày lễ"),
+                    })
+                    {
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid @contact.Item1 text-sky-500 text-sm mt-0.5 w-4 shrink-0"></i>
+                            <span class="text-sm text-gray-400">@contact.Item2</span>
+                        </li>
+                    }
+                </ul>
+
+                <!-- Certification badges -->
+                <div class="flex gap-2 mt-5">
+                    <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+                        <i class="fa-solid fa-shield-halved text-green-500 text-lg block mb-0.5"></i>
+                        <span class="text-xs text-gray-500 leading-none">Bảo mật SSL</span>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+                        <i class="fa-solid fa-certificate text-sky-500 text-lg block mb-0.5"></i>
+                        <span class="text-xs text-gray-500 leading-none">Bộ Y Tế</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-sm text-gray-500 text-center sm:text-left">
+                © @DateTime.Now.Year Hello Bác Sĩ. Bảo lưu mọi quyền.
+            </p>
+            <div class="flex gap-4 text-xs text-gray-500">
+                <span>🇻🇳 Nền tảng y tế Việt Nam</span>
+                <span>•</span>
+                <span>Giấy phép ĐKKD: 0123456789</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+@section Scripts {
+<script>
+    // Mobile menu toggle
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    btn?.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+</script>
+}

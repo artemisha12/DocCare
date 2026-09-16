@@ -1,0 +1,330 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký";
+    Layout = null; // full-page split-screen layout riêng
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký — Hello Bác Sĩ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-gray-50">
+
+<div class="min-h-screen flex">
+
+    <!-- ════════════════════════════════════════════════
+         LEFT PANEL — Brand
+         ════════════════════════════════════════════════ -->
+    <div class="hidden lg:flex lg:w-5/12 xl:w-2/5 relative bg-gradient-to-br from-emerald-500 via-teal-600 to-sky-700 overflow-hidden">
+
+        <!-- Decorative blobs -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-white opacity-5 rounded-full"></div>
+        <div class="absolute bottom-0 right-0 w-72 h-72 bg-teal-300 opacity-10 rounded-full translate-x-1/2 translate-y-1/3"></div>
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] border border-white opacity-5 rounded-full"></div>
+
+        <div class="relative z-10 flex flex-col justify-between p-12 w-full">
+
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white bg-opacity-20 flex items-center justify-center">
+                    <i class="fa-solid fa-stethoscope text-white"></i>
+                </div>
+                <span class="text-2xl font-bold text-white">Hello Bác Sĩ</span>
+            </a>
+
+            <!-- Hero text -->
+            <div class="space-y-6">
+                <h1 class="text-4xl xl:text-5xl font-extrabold text-white leading-tight">
+                    Tạo tài khoản<br />
+                    <span class="text-emerald-200">miễn phí</span>
+                </h1>
+                <p class="text-teal-100 text-base leading-relaxed max-w-sm">
+                    Tham gia cộng đồng <strong class="text-white">200,000+</strong> người dùng đang chăm sóc sức khỏe thông minh mỗi ngày.
+                </p>
+
+                <!-- Benefits list -->
+                <ul class="space-y-3">
+                    @foreach (var benefit in new[] {
+                        ("fa-calendar-check", "Đặt lịch khám với 500+ bác sĩ chuyên khoa"),
+                        ("fa-video",          "Tư vấn online không giới hạn"),
+                        ("fa-file-medical",   "Lưu trữ hồ sơ sức khỏe cá nhân"),
+                        ("fa-bell",           "Nhắc nhở uống thuốc & tái khám"),
+                    })
+                    {
+                        <li class="flex items-center gap-3 text-white text-sm">
+                            <div class="w-8 h-8 rounded-lg bg-white bg-opacity-15 flex items-center justify-center shrink-0">
+                                <i class="fa-solid @benefit.Item1 text-emerald-200 text-xs"></i>
+                            </div>
+                            @benefit.Item2
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Stats row -->
+            <div class="grid grid-cols-3 gap-4">
+                @foreach (var stat in new[] { ("500+", "Bác sĩ"), ("200K+", "Người dùng"), ("4.9★", "Đánh giá") })
+                {
+                    <div class="bg-white bg-opacity-10 rounded-xl p-3 text-center border border-white border-opacity-10">
+                        <div class="text-xl font-extrabold text-white">@stat.Item1</div>
+                        <div class="text-xs text-teal-200 mt-0.5">@stat.Item2</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+         RIGHT PANEL — Register Form
+         ════════════════════════════════════════════════ -->
+    <div class="w-full lg:w-7/12 xl:w-3/5 flex flex-col justify-center px-6 sm:px-12 lg:px-14 xl:px-20 py-10 bg-white overflow-y-auto">
+
+        <!-- Mobile logo -->
+        <a href="/" class="flex items-center gap-2 mb-8 lg:hidden">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center">
+                <i class="fa-solid fa-stethoscope text-white text-sm"></i>
+            </div>
+            <span class="text-xl font-bold"><span class="text-sky-500">Hello</span><span class="text-gray-800"> Bác Sĩ</span></span>
+        </a>
+
+        <div class="max-w-lg w-full mx-auto">
+
+            <!-- Header -->
+            <div class="mb-7">
+                <h2 class="text-3xl font-extrabold text-gray-900">Tạo tài khoản</h2>
+                <p class="mt-2 text-gray-500 text-sm">Đã có tài khoản?
+                    <a href="/Account/Login" class="text-sky-500 font-semibold hover:text-sky-600">Đăng nhập ngay</a>
+                </p>
+            </div>
+
+            <!-- Global error -->
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+            {
+                <div class="mb-5 flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                    <i class="fa-solid fa-circle-exclamation text-red-500 mt-0.5 shrink-0"></i>
+                    <div asp-validation-summary="ModelOnly" class="text-sm text-red-700"></div>
+                </div>
+            }
+
+            <!-- Form -->
+            <form asp-action="Register" asp-controller="Account" method="post" class="space-y-4">
+                @Html.AntiForgeryToken()
+
+                <!-- Họ và tên -->
+                <div>
+                    <label asp-for="FullName" class="block text-sm font-semibold text-gray-700 mb-1.5"></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fa-regular fa-user text-gray-400 text-sm"></i>
+                        </span>
+                        <input asp-for="FullName"
+                               type="text"
+                               placeholder="Nguyễn Văn A"
+                               autocomplete="name"
+                               class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-400
+                                      focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-shadow
+                                      @(ViewData.ModelState["FullName"]?.Errors.Count > 0 ? "border-red-400 bg-red-50" : "")" />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+                <!-- Email + SĐT (2 cột) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label asp-for="Email" class="block text-sm font-semibold text-gray-700 mb-1.5"></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i class="fa-regular fa-envelope text-gray-400 text-sm"></i>
+                            </span>
+                            <input asp-for="Email"
+                                   type="email"
+                                   placeholder="email@example.com"
+                                   autocomplete="email"
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-400
+                                          focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-shadow
+                                          @(ViewData.ModelState["Email"]?.Errors.Count > 0 ? "border-red-400 bg-red-50" : "")" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-xs text-red-500 mt-1 block"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="PhoneNumber" class="block text-sm font-semibold text-gray-700 mb-1.5"></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-phone text-gray-400 text-sm"></i>
+                            </span>
+                            <input asp-for="PhoneNumber"
+                                   type="tel"
+                                   placeholder="0912 345 678"
+                                   autocomplete="tel"
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-400
+                                          focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-shadow
+                                          @(ViewData.ModelState["PhoneNumber"]?.Errors.Count > 0 ? "border-red-400 bg-red-50" : "")" />
+                        </div>
+                        <span asp-validation-for="PhoneNumber" class="text-xs text-red-500 mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- Mật khẩu -->
+                <div>
+                    <label asp-for="Password" class="block text-sm font-semibold text-gray-700 mb-1.5"></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400 text-sm"></i>
+                        </span>
+                        <input asp-for="Password"
+                               type="password"
+                               id="passwordInput"
+                               placeholder="Ít nhất 8 ký tự"
+                               autocomplete="new-password"
+                               class="w-full pl-10 pr-11 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-400
+                                      focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-shadow
+                                      @(ViewData.ModelState["Password"]?.Errors.Count > 0 ? "border-red-400 bg-red-50" : "")" />
+                        <button type="button" id="togglePassword"
+                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                aria-label="Hiện/ẩn mật khẩu">
+                            <i class="fa-regular fa-eye text-sm" id="togglePwdIcon"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-xs text-red-500 mt-1 block"></span>
+
+                    <!-- Password strength indicator -->
+                    <div class="mt-2 flex gap-1.5" id="strengthBars">
+                        <div class="h-1 flex-1 rounded-full bg-gray-200" id="bar1"></div>
+                        <div class="h-1 flex-1 rounded-full bg-gray-200" id="bar2"></div>
+                        <div class="h-1 flex-1 rounded-full bg-gray-200" id="bar3"></div>
+                        <div class="h-1 flex-1 rounded-full bg-gray-200" id="bar4"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1" id="strengthLabel">Độ mạnh mật khẩu</p>
+                </div>
+
+                <!-- Xác nhận mật khẩu -->
+                <div>
+                    <label asp-for="ConfirmPassword" class="block text-sm font-semibold text-gray-700 mb-1.5"></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400 text-sm"></i>
+                        </span>
+                        <input asp-for="ConfirmPassword"
+                               type="password"
+                               id="confirmPasswordInput"
+                               placeholder="Nhập lại mật khẩu"
+                               autocomplete="new-password"
+                               class="w-full pl-10 pr-11 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-400
+                                      focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-shadow
+                                      @(ViewData.ModelState["ConfirmPassword"]?.Errors.Count > 0 ? "border-red-400 bg-red-50" : "")" />
+                        <button type="button" id="toggleConfirm"
+                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                aria-label="Hiện/ẩn xác nhận mật khẩu">
+                            <i class="fa-regular fa-eye text-sm" id="toggleCfmIcon"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+                <!-- Đồng ý điều khoản -->
+                <div class="pt-1">
+                    <div class="flex items-start gap-3">
+                        <input asp-for="AgreeTerms"
+                               type="checkbox"
+                               id="agreeTerms"
+                               class="mt-0.5 w-4 h-4 rounded border-gray-300 text-sky-500 focus:ring-sky-500 cursor-pointer shrink-0" />
+                        <label for="agreeTerms" class="text-sm text-gray-600 leading-relaxed cursor-pointer select-none">
+                            Tôi đồng ý với
+                            <a href="/terms" class="text-sky-500 font-semibold hover:underline">Điều khoản sử dụng</a>
+                            và
+                            <a href="/privacy" class="text-sky-500 font-semibold hover:underline">Chính sách bảo mật</a>
+                            của Hello Bác Sĩ.
+                        </label>
+                    </div>
+                    <span asp-validation-for="AgreeTerms" class="text-xs text-red-500 mt-1.5 block ml-7"></span>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-2 py-3.5 px-4 mt-2
+                               bg-sky-500 hover:bg-sky-600 active:bg-sky-700
+                               text-white font-bold text-sm rounded-xl transition-colors
+                               shadow-md shadow-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Tạo tài khoản miễn phí
+                </button>
+
+                <!-- Login link -->
+                <p class="text-center text-sm text-gray-500 pt-2">
+                    Đã có tài khoản?
+                    <a href="/Account/Login" class="text-sky-500 font-semibold hover:text-sky-600">Đăng nhập</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<script>
+    // ── Toggle show/hide password ──────────────────────────────────
+    function makeToggle(btnId, inputId, iconId) {
+        const btn   = document.getElementById(btnId);
+        const input = document.getElementById(inputId);
+        const icon  = document.getElementById(iconId);
+        btn?.addEventListener('click', () => {
+            const hide = input.type === 'password';
+            input.type = hide ? 'text' : 'password';
+            icon.classList.toggle('fa-eye',       !hide);
+            icon.classList.toggle('fa-eye-slash',  hide);
+        });
+    }
+    makeToggle('togglePassword', 'passwordInput',        'togglePwdIcon');
+    makeToggle('toggleConfirm',  'confirmPasswordInput', 'toggleCfmIcon');
+
+    // ── Password strength indicator ───────────────────────────────
+    const pwdInput     = document.getElementById('passwordInput');
+    const bars         = [1,2,3,4].map(i => document.getElementById('bar' + i));
+    const strengthLabel = document.getElementById('strengthLabel');
+    const levels = [
+        { color: 'bg-red-400',    label: 'Rất yếu',  text: 'text-red-500' },
+        { color: 'bg-orange-400', label: 'Yếu',      text: 'text-orange-500' },
+        { color: 'bg-yellow-400', label: 'Trung bình', text: 'text-yellow-600' },
+        { color: 'bg-green-500',  label: 'Mạnh',     text: 'text-green-600' },
+    ];
+
+    pwdInput?.addEventListener('input', () => {
+        const val = pwdInput.value;
+        let score = 0;
+        if (val.length >= 8)              score++;
+        if (/[A-Z]/.test(val))            score++;
+        if (/[0-9]/.test(val))            score++;
+        if (/[^A-Za-z0-9]/.test(val))     score++;
+
+        bars.forEach((bar, i) => {
+            bar.className = 'h-1 flex-1 rounded-full ' +
+                (i < score ? levels[score - 1].color : 'bg-gray-200');
+        });
+
+        if (val.length === 0) {
+            strengthLabel.textContent = 'Độ mạnh mật khẩu';
+            strengthLabel.className   = 'text-xs text-gray-400 mt-1';
+        } else {
+            const lv = levels[score - 1] ?? levels[0];
+            strengthLabel.textContent = lv.label;
+            strengthLabel.className   = 'text-xs mt-1 ' + lv.text;
+        }
+    });
+</script>
+
+</body>
+</html>
